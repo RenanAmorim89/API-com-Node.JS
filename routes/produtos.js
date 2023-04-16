@@ -1,33 +1,53 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-// Retorna todos os pedidos
-router.get('/', (req, res, next) => {
+// Retorna todos os produtos
+router.get("/", (req, res, next) => {
   res.status(200).send({
-    mensagem: 'Retorna os pedidos',
+    mensagem: "Retorna todos os produtos",
   });
 });
 
-// Insere um pedidos
-router.post('/', (req, res, next) => {
+// Insere um produto
+router.post("/", (req, res, next) => {
+  const produto = {
+    nome: req.body.nome,
+    preco: req.body.preco,
+  };
+
   res.status(201).send({
-    mensagem: 'O pedido foi criado',
+    mensagem: "Insere um produto",
+    produtoCriado: produto,
   });
 });
 
-// Retorna os dados de um pedido
-router.get('/:id_pedido', (req, res, next) => {
-  const id = req.params.id_pedido;
-  res.status(200).send({
-    mensagem: 'Detales do pedido',
-    id_pedido: id,
+// Retorna os dados de um produto
+router.get("/:id_produto", (req, res, next) => {
+  const id = req.params.id_produto;
+
+  if (id === "especial") {
+    res.status(200).send({
+      mensagem: "Usando o GET de um produto exclusivo",
+      id: id,
+    });
+  } else {
+    res.status(200).send({
+      mensagem: "Você passou um ID",
+    });
+  }
+});
+
+// Altera um Produto
+router.patch("/", (req, res, next) => {
+  res.status(201).send({
+    mensagem: "Produto alterado",
   });
 });
 
 // Deleta um produto
-router.delete('/', (req, res, next) => {
+router.delete("/", (req, res, next) => {
   res.status(201).send({
-    mensagem: 'Usando o DELETE dentro da rota de produtos',
+    mensagem: "Produto excluido",
   });
 });
 module.exports = router;
