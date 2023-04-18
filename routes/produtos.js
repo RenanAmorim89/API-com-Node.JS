@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const mysql = require("../mysql").pool;
 
 // Retorna todos os produtos
 router.get("/", (req, res, next) => {
@@ -10,14 +11,26 @@ router.get("/", (req, res, next) => {
 
 // Insere um produto
 router.post("/", (req, res, next) => {
-  const produto = {
-    nome: req.body.nome,
-    preco: req.body.preco,
-  };
-
-  res.status(201).send({
-    mensagem: "Insere um produto",
-    produtoCriado: produto,
+  mysql.getConnection((error, conn) => {
+    conn.query("INSERT INTO produtos (nome, preco) VALUES (?,?)");
+    //São os dois pontos de interrogação
+    [req.body.nome, req.body.preco];
+    //calbeck da query
+    (error, resultado, field) => {
+      //quando ele entrar no calbeck ele tem que liberar esta conexão
+      conn.release();
+      if (error) {
+        return res.status(500).send({
+          error: error,
+          response: null,
+        });
+      }
+      //
+      res.status(201).send({
+        mensagem: "Prduto inserido com sucesso",
+        id_produto: resultado.insertId,
+      });
+    };
   });
 });
 
